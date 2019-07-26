@@ -1,0 +1,17 @@
+{
+  "name": "smart-contract-as",
+  "version": "0.1.0",
+  "description": "Write WebAssembly smart contracts for Wavelet in AssemblyScript.",
+  "main": "index.js",
+  "repository": "https://github.com/perlin-network/smart-contract-as",
+  "author": "Kenta Iwasaki",
+  "license": "MIT",
+  "devDependencies": {
+    "assemblyscript": "AssemblyScript/assemblyscript"
+  },
+  "scripts": {
+    "asbuild:untouched": "asc assembly/*.ts -b build/untouched.wasm -t build/untouched.wat --sourceMap --validate --debug",
+    "asbuild:optimized": "asc assembly/*.ts -b build/optimized.wasm -t build/optimized.wat --sourceMap --validate --optimize",
+    "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized"
+  }
+}
