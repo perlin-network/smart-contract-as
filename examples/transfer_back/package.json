@@ -1,0 +1,18 @@
+{
+  "name": "transfer_back",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Kenta Iwasaki",
+  "license": "MIT",
+  "devDependencies": {
+    "assemblyscript": "AssemblyScript/assemblyscript"
+  },
+  "scripts": {
+    "asbuild:untouched": "asc assembly/index.ts -b build/untouched.wasm -t build/untouched.wat --sourceMap --validate --debug",
+    "asbuild:optimized": "asc assembly/index.ts -b build/optimized.wasm -t build/optimized.wat --sourceMap --validate --optimize",
+    "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized"
+  },
+  "dependencies": {
+    "smart-contract-as": "^0.1.0"
+  }
+}

@@ -15,22 +15,12 @@ yarn asinit .
 yarn add smart-contract-as
 ```
 
-Otherwise, should you be using WebAssembly Studio, make sure you add `smart-contract-as` as a dependency in `assembly/package.json`:
-
-```json
-{
- "dependencies": {
-    "smart-contract-as": "0.1.0"
-  }
-}
-```
-
 ## Example
 
 Inside `assembly/index.ts`:
 
 ```ts
-import {Parameters, Tag, Transfer, send_transaction, log} from "./wavelet";
+import {Parameters, Tag, Transfer, send_transaction, log} from "../node_modules/smart-contract-as/assembly";
 
 // Simple hello world example.
 export function _contract_init(): void {
@@ -52,3 +42,5 @@ export function _contract_on_money_received(): void {
     send_transaction(Tag.TRANSFER, tx.marshal());
 }
 ```
+
+For more examples, check out the `examples/` directory.
