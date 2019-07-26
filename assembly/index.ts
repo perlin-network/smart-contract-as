@@ -195,22 +195,26 @@ export class Parameters {
     view: DataView;
     offset: u32;
 
-    constructor() {
+    static load(): Parameters {
+        let params = new Parameters();
+
         const payload_len = _payload_len();
         const payload = new ArrayBuffer(payload_len);
         _payload(changetype<usize>(payload));
 
         const view = new DataView(payload, 0, payload_len);
 
-        this.round_idx = view.getUint64(0, true);
-        this.round_id = Uint8Array.wrap(payload, 8, 32);
-        this.transaction_id = Uint8Array.wrap(payload, 8 + 32, 32);
-        this.sender_id = Uint8Array.wrap(payload, 8 + 32 + 32, 32);
-        this.amount = view.getUint64(8 + 32 + 32 + 32, true);
+        params.round_idx = view.getUint64(0, true);
+        params.round_id = Uint8Array.wrap(payload, 8, 32);
+        params.transaction_id = Uint8Array.wrap(payload, 8 + 32, 32);
+        params.sender_id = Uint8Array.wrap(payload, 8 + 32 + 32, 32);
+        params.amount = view.getUint64(8 + 32 + 32 + 32, true);
 
         if (payload_len > 8 + 32 + 32 + 32 + 8) {
-            this.view = new DataView(payload, 8 + 32 + 32 + 32 + 8, payload_len - (8 + 32 + 32 + 32 + 8));
+            params.view = new DataView(payload, 8 + 32 + 32 + 32 + 8, payload_len - (8 + 32 + 32 + 32 + 8));
         }
+
+        return params;
     }
 
     string(): string {

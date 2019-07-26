@@ -24,19 +24,19 @@ import {Parameters, Tag, Transfer, send_transaction, log} from "../node_modules/
 
 // Simple hello world example.
 export function _contract_init(): void {
-    const params = new Parameters();
+    const params = Parameters.load();
     log("hello world");
 }
 
 // Echoes back a message the sender provides.
 export function _contract_test(): void {
-    const params = new Parameters();
+    const params = Parameters.load();
     log("echoing back: " + params.string());
 }
 
 // Sends back half the PERLs it receives back to the sender.
 export function _contract_on_money_received(): void {
-    const params = new Parameters();
+    const params = Parameters.load();
 
     const tx = new Transfer(params.sender_id, params.amount / 2);
     send_transaction(Tag.TRANSFER, tx.marshal());

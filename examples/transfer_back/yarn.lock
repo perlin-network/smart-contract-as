@@ -105,10 +105,10 @@ path-is-absolute@^1.0.0:
   resolved "https://registry.yarnpkg.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
   integrity sha1-F0uSaHNVNP+8es5r9TpanhtcX18=
 
-smart-contract-as@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/smart-contract-as/-/smart-contract-as-0.1.0.tgz#54eaa0e2c530c5aefb0bb08acf88c52df1a39883"
-  integrity sha512-F1cY4/1RBVKKORwes5qK+QHM/bsAl6YPXZEF16zZ4BhYEldM/9Le134E2aSmcsQHnoBLgqDNQAEn2PQY++5acA==
+smart-contract-as@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/smart-contract-as/-/smart-contract-as-0.1.2.tgz#4880c0964c2c1097ad0b3b885988fbeaa6c92378"
+  integrity sha512-00YioPRDvGPXgElb5PWxQRQtrp4jAQm36f8bEdi91EDCi7pXjEyvV1XSAfbIPgsQfUwiff8Mc6uhwHqcWADoGQ==
 
 source-map-support@^0.5.12:
   version "0.5.12"

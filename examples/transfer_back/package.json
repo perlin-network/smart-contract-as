@@ -13,6 +13,6 @@
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized"
   },
   "dependencies": {
-    "smart-contract-as": "^0.1.0"
+    "smart-contract-as": "^0.1.2"
   }
 }
