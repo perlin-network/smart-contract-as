@@ -169,7 +169,7 @@ export class Contract {
         public gas_deposit: u64,
         public params: Uint8Array,
         public code: Uint8Array,
-    ) {}
+    ) { }
 
     marshal(): Uint8Array {
         const writer = new PayloadWriter();
@@ -328,3 +328,5 @@ function _abort(
     // @ts-ignore
     log(`ABORT: ${message} - ${fileName}:${lineNumber.toString()}`);
 }
+
+export { HashMap, AVLMap } from "./map";
