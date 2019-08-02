@@ -329,4 +329,4 @@ function _abort(
     log(`ABORT: ${message} - ${fileName}:${lineNumber.toString()}`);
 }
 
-export { HashMap } from "./map";
+export { HashMap, AVLMap } from "./map";

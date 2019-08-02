@@ -109,14 +109,44 @@ class Chained<K, V> {
     }
 }
 
-// TODO
-/*
 // An AVLMap might be a bit slower than HashMap, but is more stable in terms of performance and is resistant to DoS.
 export class AVLMap<K, V> {
+    root: AVLNode<K, V> | null;
     cmp: (left: K, right: K) => i32;
 
     constructor(newCmp: (left: K, right: K) => i32) {
+        this.root = null;
         this.cmp = newCmp;
+    }
+
+    set(key: K, value: V): void {
+        if (this.root == null) {
+            this.root = new AVLNode(key);
+            this.root.value = value;
+        } else {
+            this.root = this.root.set(key, value, this.cmp);
+        }
+    }
+
+    get(key: K): V {
+        if (this.root == null) {
+            throw new Error("get: this avl map contains no element");
+        } else {
+            return this.root.get(key, this.cmp);
+        }
+    }
+
+    has(key: K): bool {
+        if (this.root == null) return false;
+        else return this.root.has(key, this.cmp);
+    }
+
+    remove(key: K): void {
+        if (this.root == null) {
+            throw new Error("remove: this avl map contains no element");
+        } else {
+            this.root = this.root.remove(key, this.cmp);
+        }
     }
 }
 
@@ -135,7 +165,7 @@ class AVLNode<K, V> {
         this.right = null;
     }
 
-    balanceFactor(): i32 {
+    private balanceFactor(): i32 {
         if (this.left && this.right) {
             return this.left.height - this.right.height;
         } else {
@@ -143,12 +173,133 @@ class AVLNode<K, V> {
         }
     }
 
-    insert(key: K, value: V, cmp: (left: K, right: K) => i32) {
+    private update(): void {
+        if (this.left && this.right) {
+            this.height = this.left.height + this.right.height + 1;
+        } else {
+            this.height = 0;
+        }
+    }
+
+    private rotateLeft(): AVLNode<K, V> {
+        let oldRight = this.right!;
+        this.right = oldRight.left;
+        oldRight.left = this;
+        this.update();
+        oldRight.update();
+        return oldRight;
+    }
+
+    private rotateRight(): AVLNode<K, V> {
+        let oldLeft = this.left!;
+        this.left = oldLeft.right;
+        oldLeft.right = this;
+        this.update();
+        oldLeft.update();
+        return oldLeft;
+    }
+
+    private rebalance(): AVLNode<K, V> {
+        this.update();
+        let balance = this.balanceFactor();
+        if (balance > 1) {
+            if (this.left!.balanceFactor() > 0) {
+                this.left = this.left!.rotateLeft();
+            }
+            return this.rotateRight();
+        } else if (balance < -1) {
+            if (this.right!.balanceFactor() > 0) {
+                this.right = this.right!.rotateRight();
+            }
+            return this.rotateLeft();
+        } else {
+            return this;
+        }
+    }
+
+    has(key: K, cmp: (left: K, right: K) => i32): boolean {
+        let cmpRet = cmp(key, this.key);
+
+        if (this.left && this.right) {
+            if (cmpRet < 0) {
+                return this.left.has(key, cmp);
+            } else {
+                return this.right.has(key, cmp);
+            }
+        } else {
+            return cmpRet == 0;
+        }
+    }
+
+    get(key: K, cmp: (left: K, right: K) => i32): V {
+        let cmpRet = cmp(key, this.key);
+
+        if (this.left && this.right) {
+            if (cmpRet < 0) {
+                return this.left.get(key, cmp);
+            } else {
+                return this.right.get(key, cmp);
+            }
+        } else {
+            if (cmpRet == 0) {
+                return this.value!;
+            } else {
+                throw new Error("key not found in avl map");
+            }
+        }
+    }
+
+    remove(key: K, cmp: (left: K, right: K) => i32): AVLNode<K, V> | null {
+        let cmpRet = cmp(key, this.key);
+
+        if (this.left && this.right) {
+            if (cmpRet < 0) {
+                this.left = this.left.remove(key, cmp);
+                if (!this.left) return this.right;
+            } else {
+                this.right = this.right.remove(key, cmp);
+                if (!this.right) return this.left;
+            }
+            return this.rebalance();
+        } else {
+            if (cmpRet == 0) {
+                return null;
+            } else {
+                return this;
+            }
+        }
+    }
+
+    set(key: K, value: V, cmp: (left: K, right: K) => i32): AVLNode<K, V> {
+        let cmpRet = cmp(key, this.key);
+
         if (this.left && this.right) {
             // Non-leaf
-
-
+            if (cmpRet < 0) {
+                this.left = this.left.set(key, value, cmp);
+                return this.rebalance();
+            } else {
+                this.right = this.right.set(key, value, cmp);
+                return this.rebalance();
+            }
+        } else {
+            let newLeaf: AVLNode<K, V> = new AVLNode(key);
+            newLeaf.value = value;
+            if (cmpRet < 0) {
+                let node: AVLNode<K, V> = new AVLNode(newLeaf.key);
+                node.left = newLeaf;
+                node.right = this;
+                node.update();
+                return node;
+            } else if (cmpRet == 0) {
+                return newLeaf;
+            } else {
+                let node: AVLNode<K, V> = new AVLNode(this.key);
+                node.left = this;
+                node.right = newLeaf;
+                node.update();
+                return node;
+            }
         }
     }
 }
-*/
