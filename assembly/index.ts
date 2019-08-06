@@ -119,17 +119,18 @@ export class Transfer {
         public gas_deposit: u64 = 0,
         public func_name: string | null = null,
         public func_params: Uint8Array | null = null,
-    ) { }
+    ) {
+    }
 
     marshal(): Uint8Array {
         const writer = new PayloadWriter();
         writer.bytes(this.recipient);
         writer.u64(this.amount);
 
-        if (this.func_name !== null && this.func_name.length > 0) {
-            writer.u64(this.gas_limit);
-            writer.u64(this.gas_deposit);
+        writer.u64(this.gas_limit);
+        writer.u64(this.gas_deposit);
 
+        if (this.func_name !== null && this.func_name.length > 0) {
             writer.u32(String.UTF8.byteLength(this.func_name!));
             writer.string(this.func_name!, false);
 
@@ -153,7 +154,8 @@ export class Stake {
     constructor(
         public op: StakeOp,
         public amount: u64,
-    ) { }
+    ) {
+    }
 
     marshal(): Uint8Array {
         const writer = new PayloadWriter();
@@ -169,7 +171,8 @@ export class Contract {
         public gas_deposit: u64,
         public params: Uint8Array,
         public code: Uint8Array,
-    ) {}
+    ) {
+    }
 
     marshal(): Uint8Array {
         const writer = new PayloadWriter();
@@ -235,8 +238,9 @@ export class Parameters {
         return String.UTF8.decode(v.buffer);
     }
 
-    bytes(): Uint8Array {
-        let buf = new Uint8Array(this.u32());
+    bytes(len: i32 = 0): Uint8Array {
+        const buf = new Uint8Array(len > 0 ? len : this.u32());
+
         for (let i = 0; i < buf.byteLength; i++) {
             buf[i] = this.u8();
         }
@@ -313,9 +317,32 @@ export function log(a: string): void {
     _log(changetype<usize>(str), str.byteLength);
 }
 
+export function panic(a: string = ""): void {
+    const str = String.UTF8.encode(a);
+    _result(changetype<usize>(str), str.byteLength);
+    unreachable();
+}
+
 export function send_transaction(tag: Tag, payload: Uint8Array): void {
     const v = payload.buffer;
     _send_transaction(<u8>tag, changetype<usize>(v), v.byteLength);
+}
+
+export function to_hex_string(buf: Uint8Array): string {
+    let out = "";
+
+    for (let i = 0; i < buf.length; i++) {
+        const a = buf[i] as u32;
+        const b = a & 0xf;
+        const c = a >> 4;
+
+        let x: u32 = ((87 + b + (((b - 10) >> 8) & ~38)) << 8) | (87 + c + (((c - 10) >> 8) & ~38));
+        out += String.fromCharCode(x as u8);
+        x >>= 8;
+        out += String.fromCharCode(x as u8);
+    }
+
+    return out;
 }
 
 function _abort(
